@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Shop</title>
+
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="components/Header/Header.css">
+  <link rel="stylesheet" href="components/Products/Products.css">
+  <link rel="stylesheet" href="components/Shopping/Shopping.css">
+  <link rel="stylesheet" href="components/Favorites/Favorites.css">
+  <link rel="stylesheet" href="components/Profile/Profile.css">
+  <link rel="stylesheet" href="components/Footer/Footer.css">
+</head>
+<body>
+
+  <div id="header"></div>
+  <div id="spa-view"></div>
+  <div id="footer"></div>
+
+  <!-- constants & utils -->
+  <script src="constants/catalog.js"></script>
+<script src="constants/root.js"></script>
+<script src="utils/localStorageUtil.js"></script>
+
+  <!-- components -->
+  <script src="components/Header/Header.js"></script>
+<script src="components/Products/Products.js"></script>
+<script src="components/Shopping/Shopping.js"></script>
+<script src="components/Favorites/Favorites.js"></script>
+<script src="components/Profile/Profile.js"></script>
+<script src="components/Footer/Footer.js"></script>
+
+  <!-- SPA navigation -->
+  <script>
+    const pages = {
+      home: `
+<section class="hero">
+  <h1 class="hero-title">Современный выбор для каждого.</h1>
+  <p class="hero-subtitle">Лучшие товары, точный дизайн, комфортная покупка.</p>
+  <button class="hero-btn" onclick="renderPage('catalog')">Начать покупки</button>
+</section>
+
+<section class="popular-section">
+  <h2 class="section-title">Популярное</h2>
+  <div id="home-popular"></div>
+</section>
+
+<section class="advantages">
+  <div class="adv-item">
+    <h3>🚀 Быстро</h3>
+    <p>Мгновенная загрузка и удобная навигация.</p>
+  </div>
+  <div class="adv-item">
+    <h3>🎧 Поддержка</h3>
+    <p>Всегда готовы помочь и ответить на вопросы.</p>
+  </div>
+  <div class="adv-item">
+    <h3>✨ Качество</h3>
+    <p>Только лучшие и проверенные товары.</p>
+  </div>
+</section>
+`,
+
+      catalog: `<div id="products-root"></div>`,
+      favorites: `<div id="favorites-root"></div>`,
+      profile: `<div id="profile-root"></div>`,
+      cart: `<div id="shopping-root"></div>`
+    };
+
+    function renderPage(page){
+      const container = document.getElementById('spa-view');
+      container.className = 'page-enter';
+      setTimeout(() => {
+        container.innerHTML = pages[page] || pages.home;
+
+        // after HTML inserted, call component renders
+        if(page === 'catalog') productsPage.render();
+        if(page === 'cart') shoppingPage.render();
+        if(page === 'favorites') favoritesPage.render();
+        if(page === 'profile') profilePage.render();
+        if (page === "home") renderHomePopular();
+
+
+        headerPage.render(); // refresh header (counter etc)
+        container.className = 'page-enter-active';
+      }, 80);
+    }
+
+    // start: show catalog by default
+    renderPage('catalog');
+
+    // Рендер популярных товаров
+function renderHomePopular() {
+  let container = document.getElementById("home-popular");
+  if (!container) return;
+
+  let html = "";
+
+  CATALOG.slice(0, 4).forEach(item => {
+    html += `
+      <div class="home-product">
+        <img src="${item.img}" class="home-product-img">
+        <p class="home-product-name">${item.name}</p>
+        <span class="home-product-price">${item.price.toLocaleString()} so'm</span>
+      </div>
+    `;
+  });
+
+  container.innerHTML = html;
+}
+
+  </script>
+
+<script src="utils/theme.js"></script>
+
+</body>
+</html>
